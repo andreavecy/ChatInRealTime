@@ -1,15 +1,33 @@
 import consumer from "./consumer"
 
-consumer.subscriptions.create("RoomChannel", {
-  connected() {
-    // Called when the subscription is ready for use on the server
-  },
+document.addEventListener("turbolinks:load", function(){
+  console.log("Cargo la pagina")
 
-  disconnected() {
-    // Called when the subscription has been terminated by the server
-  },
+  let roomClient = consumer.subscriptions.create("RoomChannel", {
+    connected() {
+      // Called when the subscription is ready for use on the server
+    },
+  
+    disconnected() {
+      // Called when the subscription has been terminated by the server
+    },
+  
+    received(data) {
+      // Called when there's incoming data on the websocket for this channel
+      console.log(data);
+    }
+  });
 
-  received(data) {
-    // Called when there's incoming data on the websocket for this channel
-  }
-});
+  document.querySelector("#pinger").addEventListener("click", function(){
+    console.log("Enviando Mensaje")
+    //enviar mensaje al servidor ws
+    roomClient.send({
+      message: prompt("Escribe el Mensaje")
+    })
+
+  });
+
+
+})
+
+
